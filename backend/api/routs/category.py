@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
-from models.category import *
+from models.category import Category, CategoryCreate, CategoryUpdate, CategoryPublic
 from api.deps import SessionDep
 
 router = APIRouter(

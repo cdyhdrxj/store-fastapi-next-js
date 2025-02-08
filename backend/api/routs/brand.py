@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
-from models.brand import *
+from models.brand import Brand, BrandCreate, BrandUpdate, BrandPublic
 from api.deps import SessionDep
 
 router = APIRouter(
