@@ -1,0 +1,61 @@
+
+from typing import Annotated
+from fastapi import APIRouter, HTTPException, Query
+from sqlmodel import select
+
+from models.brand import *
+from api.deps import SessionDep
+
+router = APIRouter(
+    prefix="/brand",
+    tags=["brand"],
+)
+
+@router.post("/", response_model=BrandPublic)
+def create_brand(brand: BrandCreate, session: SessionDep):
+    db_brand = Brand.model_validate(brand)
+    session.add(db_brand)
+    session.commit()
+    session.refresh(db_brand)
+    return db_brand
+
+
+@router.get("/", response_model=list[BrandPublic])
+def read_brands(
+    session: SessionDep,
+    offset: int = 0,
+    limit: Annotated[int, Query(le=100)] = 100,
+):
+    brands = session.exec(select(Brand).offset(offset).limit(limit)).all()
+    return brands
+
+
+@router.get("/{brand_id}", response_model=BrandPublic)
+def read_brand(brand_id: int, session: SessionDep):
+    hero = session.get(Brand, brand_id)
+    if not hero:
+        raise HTTPException(status_code=404, detail="Brand not found")
+    return hero
+
+
+@router.patch("/{brand_id}", response_model=BrandPublic)
+def update_brand(brand_id: int, brand: BrandUpdate, session: SessionDep):
+    brand_db = session.get(Brand, brand_id)
+    if not brand_db:
+        raise HTTPException(status_code=404, detail="Brand not found")
+    brand_data = brand.model_dump(exclude_unset=True)
+    brand_db.sqlmodel_update(brand_data)
+    session.add(brand_db)
+    session.commit()
+    session.refresh(brand_db)
+    return brand_db
+
+
+@router.delete("/{brand_id}")
+def delete_brand(brand_id: int, session: SessionDep):
+    brand = session.get(Brand, brand_id)
+    if not brand:
+        raise HTTPException(status_code=404, detail="Brand not found")
+    session.delete(brand)
+    session.commit()
+    return {"ok": True}
