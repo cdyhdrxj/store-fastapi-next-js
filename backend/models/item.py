@@ -1,12 +1,9 @@
 from sqlmodel import Field, SQLModel
 
-from models.brand import Brand
-from models.category import Category
-
 class ItemBase(SQLModel):
     name: str = Field(index=True, max_length=50)
     description: str = Field(index=True, max_length=200)
-    price: int = Field(default=0, sa_column_kwargs={'nullable': False, 'check_constraints': ['price >= 0', 'price <= 100000000']})
+    price: int = Field(sa_column_kwargs={'nullable': False, 'check_constraints': ['price >= 0', 'price <= 100000000']})
 
 
 class Item(ItemBase, table=True):
@@ -16,6 +13,12 @@ class Item(ItemBase, table=True):
 
 
 class ItemPublic(ItemBase):
+    id: int
+    brand_id: int
+    category_id: int
+
+
+class ItemView(ItemBase):
     id: int
     brand: str
     category: str
