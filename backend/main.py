@@ -7,4 +7,4 @@ app = FastAPI()
 
 app.include_router(api_router)
 
-# create_db_and_tables()
+create_db_and_tables()

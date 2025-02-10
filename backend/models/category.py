@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel
 
 
 class CategoryBase(SQLModel):
-    name: str = Field(index=True)
+    name: str = Field(index=True, max_length=50)
 
 
 class Category(CategoryBase, table=True):

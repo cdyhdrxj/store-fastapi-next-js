@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel
 
 
 class BrandBase(SQLModel):
-    name: str = Field(index=True)
+    name: str = Field(index=True, max_length=50)
 
 
 class Brand(BrandBase, table=True):

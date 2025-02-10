@@ -6,7 +6,7 @@ from models.category import Category, CategoryCreate, CategoryUpdate, CategoryPu
 from api.deps import SessionDep
 
 router = APIRouter(
-    prefix="/category",
+    prefix="/categories",
     tags=["category"],
 )
 
@@ -20,21 +20,17 @@ def create_category(category: CategoryCreate, session: SessionDep):
 
 
 @router.get("/", response_model=list[CategoryPublic])
-def read_categories(
-    session: SessionDep,
-    offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
-):
-    categorys = session.exec(select(Category).offset(offset).limit(limit)).all()
+def read_categories(session: SessionDep):
+    categorys = session.exec(select(Category)).all()
     return categorys
 
 
 @router.get("/{category_id}", response_model=CategoryPublic)
 def read_category(category_id: int, session: SessionDep):
-    hero = session.get(Category, category_id)
-    if not hero:
+    category_db = session.get(Category, category_id)
+    if not category_db :
         raise HTTPException(status_code=404, detail="Category not found")
-    return hero
+    return category_db 
 
 
 @router.patch("/{category_id}", response_model=CategoryPublic)

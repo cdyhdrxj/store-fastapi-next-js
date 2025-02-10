@@ -6,7 +6,7 @@ from models.brand import Brand, BrandCreate, BrandUpdate, BrandPublic
 from api.deps import SessionDep
 
 router = APIRouter(
-    prefix="/brand",
+    prefix="/brands",
     tags=["brand"],
 )
 
@@ -20,21 +20,17 @@ def create_brand(brand: BrandCreate, session: SessionDep):
 
 
 @router.get("/", response_model=list[BrandPublic])
-def read_brands(
-    session: SessionDep,
-    offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
-):
-    brands = session.exec(select(Brand).offset(offset).limit(limit)).all()
+def read_brands(session: SessionDep):
+    brands = session.exec(select(Brand)).all()
     return brands
 
 
 @router.get("/{brand_id}", response_model=BrandPublic)
 def read_brand(brand_id: int, session: SessionDep):
-    hero = session.get(Brand, brand_id)
-    if not hero:
+    brand_db = session.get(Brand, brand_id)
+    if not brand_db:
         raise HTTPException(status_code=404, detail="Brand not found")
-    return hero
+    return brand_db
 
 
 @router.patch("/{brand_id}", response_model=BrandPublic)
