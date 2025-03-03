@@ -2,14 +2,14 @@ from sqlmodel import Field, SQLModel
 
 
 class CategoryBase(SQLModel):
-    name: str = Field(index=True, max_length=50)
+    name: str = Field(max_length=50)
 
 
 class Category(CategoryBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: int | None = Field(None, primary_key=True)
 
 
-class CategoryPublic(CategoryBase):
+class CategoryRead(CategoryBase):
     id: int
 
 
@@ -18,4 +18,4 @@ class CategoryCreate(CategoryBase):
 
 
 class CategoryUpdate(CategoryBase):
-    name: str | None = None
+    name: str | None = Field(None, max_length=50)

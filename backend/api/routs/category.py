@@ -1,8 +1,7 @@
-from typing import Annotated
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
-from models.category import Category, CategoryCreate, CategoryUpdate, CategoryPublic
+from models.category import Category, CategoryCreate, CategoryRead, CategoryUpdate
 from api.deps import SessionDep
 
 router = APIRouter(
@@ -10,7 +9,7 @@ router = APIRouter(
     tags=["category"],
 )
 
-@router.post("/", response_model=CategoryPublic)
+@router.post("/", response_model=CategoryRead)
 def create_category(category: CategoryCreate, session: SessionDep):
     db_category = Category.model_validate(category)
     session.add(db_category)
@@ -19,13 +18,13 @@ def create_category(category: CategoryCreate, session: SessionDep):
     return db_category
 
 
-@router.get("/", response_model=list[CategoryPublic])
+@router.get("/", response_model=list[CategoryRead])
 def read_categories(session: SessionDep):
     categorys = session.exec(select(Category)).all()
     return categorys
 
 
-@router.get("/{category_id}", response_model=CategoryPublic)
+@router.get("/{category_id}", response_model=CategoryRead)
 def read_category(category_id: int, session: SessionDep):
     category_db = session.get(Category, category_id)
     if not category_db :
@@ -33,7 +32,7 @@ def read_category(category_id: int, session: SessionDep):
     return category_db 
 
 
-@router.patch("/{category_id}", response_model=CategoryPublic)
+@router.patch("/{category_id}", response_model=CategoryRead)
 def update_category(category_id: int, category: CategoryUpdate, session: SessionDep):
     category_db = session.get(Category, category_id)
     if not category_db:

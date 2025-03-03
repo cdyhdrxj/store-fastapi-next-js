@@ -1,27 +1,27 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
+
+from models.brand import Brand, BrandRead
+from models.category import Category, CategoryRead
+
 
 class ItemBase(SQLModel):
-    name: str = Field(index=True, max_length=50)
-    description: str = Field(index=True, max_length=200)
-    price: int = Field(sa_column_kwargs={'nullable': False, 'check_constraints': ['price >= 0', 'price <= 100000000']})
+    name: str = Field(max_length=50)
+    description: str = Field(max_length=200)
+    price: int = Field(ge=0, le=10 ** 8)
 
 
 class Item(ItemBase, table=True):
-    id: int = Field(default=None, primary_key=True)
-    brand_id: int = Field(default=None, foreign_key="brand.id")
-    category_id: int = Field(default=None, foreign_key="category.id")
+    id: int | None = Field(None, primary_key=True)
+    brand_id: int = Field(foreign_key="brand.id", ondelete="RESTRICT")
+    category_id: int = Field(foreign_key="category.id", ondelete="RESTRICT")
+    brand: Brand | None = Relationship()
+    category: Category | None = Relationship()
 
 
-class ItemPublic(ItemBase):
+class ItemRead(ItemBase):
     id: int
-    brand_id: int
-    category_id: int
-
-
-class ItemView(ItemBase):
-    id: int
-    brand: str
-    category: str
+    brand: Brand = None
+    category: Category = None
 
 
 class ItemCreate(ItemBase):
@@ -30,8 +30,8 @@ class ItemCreate(ItemBase):
 
 
 class ItemUpdate(ItemBase):
-    name: str | None = None
-    description: str | None = None
-    price: int | None = None
+    name: str | None = Field(None, max_length=50)
+    description: str | None = Field(None, max_length=200)
+    price: int | None = Field(None, ge=0, le=10 ** 8)
     brand_id: int | None = None
     category_id: int | None = None
