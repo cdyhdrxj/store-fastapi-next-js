@@ -2,6 +2,7 @@ from sqlmodel import Field, SQLModel, Relationship
 
 from models.brand import Brand, BrandRead
 from models.category import Category, CategoryRead
+from models.cover import Cover, CoverRead
 
 
 class ItemBase(SQLModel):
@@ -14,14 +15,23 @@ class Item(ItemBase, table=True):
     id: int | None = Field(None, primary_key=True)
     brand_id: int = Field(foreign_key="brand.id", ondelete="RESTRICT")
     category_id: int = Field(foreign_key="category.id", ondelete="RESTRICT")
+    cover_id: int | None = Field(None, foreign_key="cover.id", ondelete="SET NULL")
     brand: Brand | None = Relationship()
     category: Category | None = Relationship()
+    cover: Cover | None = Relationship()
+
+    images: list["Image"] = Relationship(back_populates="item")
 
 
 class ItemRead(ItemBase):
     id: int
-    brand: Brand = None
-    category: Category = None
+    brand: BrandRead = None
+    category: CategoryRead = None
+    cover: CoverRead | None = None
+
+
+class ItemReadImages(ItemRead):
+    images: list["ImageRead"] = []
 
 
 class ItemCreate(ItemBase):
@@ -35,3 +45,25 @@ class ItemUpdate(ItemBase):
     price: int | None = Field(None, ge=0, le=10 ** 8)
     brand_id: int | None = None
     category_id: int | None = None
+
+
+class CoverUpdate(ItemUpdate):
+    cover_id: int | None = None
+
+
+# -------------------------------------------------------------------
+# Классы, связанные с картинками (не знаю, как развести их в разные файлы)
+# -------------------------------------------------------------------
+class ImageBase(SQLModel):
+    name: str = Field(max_length=255)
+
+
+class Image(ImageBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    item_id: int | None = Field(default=None, foreign_key="item.id")
+    item: Item = Relationship(back_populates="images")
+
+
+class ImageRead(ImageBase):
+    id: int
+# -------------------------------------------------------------------

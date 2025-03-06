@@ -10,7 +10,6 @@ router = APIRouter(
     tags=["item"],
 )
 
-
 @router.post("/", response_model=ItemRead)
 def create_item(item: ItemCreate, session: SessionDep):
     db_item = Item.model_validate(item)

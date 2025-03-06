@@ -15,7 +15,6 @@ def create_brand(brand: BrandCreate, session: SessionDep):
     session.add(db_brand)
     session.commit()
     session.refresh(db_brand)
-    print(db_brand)
     return db_brand
 
 
