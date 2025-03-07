@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from models.item import Item, ItemRead, CoverUpdate
+from models.item import Item, ItemReadImages, CoverUpdate
 from models.cover import Cover
 from api.routs.item import update_item
 from api.deps import SessionDep
@@ -8,11 +8,11 @@ from general.image import ImageFile, image_upload, image_delete
 
 
 router = APIRouter(
-    prefix="/items",
+    prefix="/items/cover",
     tags=["item"],
 )
 
-@router.post("/cover/{item_id}", response_model=ItemRead)
+@router.post("/{item_id}", response_model=ItemReadImages)
 def create_cover(item_id: int, file: ImageFile, session: SessionDep):
     item = session.get(Item, item_id)
     if not item:
@@ -35,7 +35,7 @@ def create_cover(item_id: int, file: ImageFile, session: SessionDep):
     return update_item(item_id, new_item, session)
 
 
-@router.delete("/cover/{item_id}")
+@router.delete("/{item_id}")
 def delete_cover(item_id: int, session: SessionDep):
     item = session.get(Item, item_id)
     if not item:

@@ -60,10 +60,14 @@ class ImageBase(SQLModel):
 
 class Image(ImageBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    item_id: int | None = Field(default=None, foreign_key="item.id")
+    item_id: int = Field(foreign_key="item.id")
     item: Item = Relationship(back_populates="images")
 
 
 class ImageRead(ImageBase):
     id: int
+
+
+class ImageCreate(ImageBase):
+    item_id: int
 # -------------------------------------------------------------------

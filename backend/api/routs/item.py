@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
-from models.item import Item, ItemCreate, ItemRead, ItemUpdate
+from models.item import Item, ItemCreate, ItemRead, ItemReadImages, ItemUpdate
 from api.deps import SessionDep
 
 router = APIRouter(
@@ -10,7 +10,7 @@ router = APIRouter(
     tags=["item"],
 )
 
-@router.post("/", response_model=ItemRead)
+@router.post("/", response_model=ItemReadImages)
 def create_item(item: ItemCreate, session: SessionDep):
     db_item = Item.model_validate(item)
     session.add(db_item)
@@ -34,7 +34,7 @@ def read_items(
     return items
 
 
-@router.get("/{item_id}", response_model=ItemRead)
+@router.get("/{item_id}", response_model=ItemReadImages)
 def read_item(item_id: int, session: SessionDep):
     item_db = session.get(Item, item_id)
     if not item_db:
@@ -42,7 +42,7 @@ def read_item(item_id: int, session: SessionDep):
     return item_db
 
 
-@router.patch("/{item_id}", response_model=ItemRead)
+@router.patch("/{item_id}", response_model=ItemReadImages)
 def update_item(item_id: int, item: ItemUpdate, session: SessionDep):
     item_db = session.get(Item, item_id)
     if not item_db:
