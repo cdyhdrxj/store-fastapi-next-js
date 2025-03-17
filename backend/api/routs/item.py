@@ -1,17 +1,23 @@
+from fastapi import APIRouter, HTTPException, Query, Depends, status
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
 from models.item import Item, ItemCreate, ItemRead, ItemReadImages, ItemUpdate
 from api.deps import SessionDep
+from general.auth import Role
+from general.permission_checker import PermissionChecker
 
 router = APIRouter(
     prefix="/items",
-    tags=["item"],
+    tags=["Товары"],
 )
 
 @router.post("/", response_model=ItemReadImages)
-def create_item(item: ItemCreate, session: SessionDep):
+def create_item(
+    item: ItemCreate,
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
     db_item = Item.model_validate(item)
     session.add(db_item)
     session.commit()
@@ -38,15 +44,20 @@ def read_items(
 def read_item(item_id: int, session: SessionDep):
     item_db = session.get(Item, item_id)
     if not item_db:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
     return item_db
 
 
 @router.patch("/{item_id}", response_model=ItemReadImages)
-def update_item(item_id: int, item: ItemUpdate, session: SessionDep):
+def update_item(
+    item_id: int,
+    item: ItemUpdate,
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
     item_db = session.get(Item, item_id)
     if not item_db:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
     item_data = item.model_dump(exclude_unset=True)
     item_db.sqlmodel_update(item_data)
     session.add(item_db)
@@ -56,10 +67,14 @@ def update_item(item_id: int, item: ItemUpdate, session: SessionDep):
 
 
 @router.delete("/{item_id}")
-def delete_item(item_id: int, session: SessionDep):
+def delete_item(
+    item_id: int,
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
     item = session.get(Item, item_id)
     if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
     session.delete(item)
     session.commit()
     return {"ok": True}

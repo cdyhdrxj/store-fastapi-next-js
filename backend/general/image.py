@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import HTTPException, UploadFile
+from fastapi import HTTPException, UploadFile, status
 from pydantic import BeforeValidator, Field
 import os, uuid
 
@@ -25,14 +25,20 @@ def generate_unique_filename(filename: str, max_length: int = 255):
 # Функция для валидации типа файла
 def validate_file_type(file: UploadFile):
     if not file.content_type.startswith(config.ALLOWED_MIME_TYPE):
-        raise HTTPException(status_code=400, detail="File type not allowed. Only images are allowed.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File type not allowed. Only images are allowed."
+        )
     return file
 
 
 # Функция для валидации размера файла
 def validate_file_size(file: UploadFile):
     if file.size > config.MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="File size exceeds the maximum allowed size (5 MB).")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File size exceeds the maximum allowed size (5 MB)."
+        )
     return file
 
 
