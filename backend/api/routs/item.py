@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends, status
 from typing import Annotated
 from sqlmodel import select
 
-from models.item import Item, ItemCreate, ItemRead, ItemReadImages, ItemUpdate
+from models.item import Item, ItemCreate, ItemRead, ItemReadImages, ItemUpdate, ItemAdd
 from api.deps import SessionDep
 from general.auth import Role
 from general.permission_checker import PermissionChecker
@@ -44,7 +44,7 @@ def read_items(
 def read_item(item_id: int, session: SessionDep):
     item_db = session.get(Item, item_id)
     if not item_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
     return item_db
 
 
@@ -57,7 +57,28 @@ def update_item(
 ):
     item_db = session.get(Item, item_id)
     if not item_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
+    item_data = item.model_dump(exclude_unset=True)
+    item_db.sqlmodel_update(item_data)
+    session.add(item_db)
+    session.commit()
+    session.refresh(item_db)
+    return item_db
+
+
+@router.patch("/add/{item_id}", response_model=ItemRead)
+def update_quantity(
+    item_id: int,
+    item: ItemAdd,
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
+    item_db = session.get(Item, item_id)
+    if not item_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
+    if item.quantity <= 0:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Нельзя уменьшить количество товара")
+    item.quantity += item_db.quantity
     item_data = item.model_dump(exclude_unset=True)
     item_db.sqlmodel_update(item_data)
     session.add(item_db)
@@ -74,7 +95,7 @@ def delete_item(
 ):
     item = session.get(Item, item_id)
     if not item:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
     session.delete(item)
     session.commit()
     return {"ok": True}

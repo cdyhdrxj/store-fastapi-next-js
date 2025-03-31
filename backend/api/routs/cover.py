@@ -22,7 +22,7 @@ def create_cover(
 ):
     item = session.get(Item, item_id)
     if not item:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
 
     if item.cover_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Item already has a cover")
@@ -49,7 +49,7 @@ def delete_cover(
 ):
     item = session.get(Item, item_id)
     if not item:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
 
     cover = session.get(Cover, item.cover_id)
     if not cover:

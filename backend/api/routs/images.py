@@ -20,7 +20,7 @@ def create_image(
 ):
     item = session.get(Item, item_id)
     if not item:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
 
     file_name = image_upload(file)
     if not file_name:

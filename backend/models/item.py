@@ -16,6 +16,7 @@ class Item(ItemBase, table=True):
     brand_id: int = Field(foreign_key="brand.id", ondelete="RESTRICT")
     category_id: int = Field(foreign_key="category.id", ondelete="RESTRICT")
     cover_id: int | None = Field(None, foreign_key="cover.id", ondelete="SET NULL")
+    quantity: int | None = Field(0, ge=0, le=10 ** 8)
     brand: Brand | None = Relationship()
     category: Category | None = Relationship()
     cover: Cover | None = Relationship()
@@ -30,6 +31,7 @@ class ItemRead(ItemBase):
     brand: BrandRead = None
     category: CategoryRead = None
     cover: CoverRead | None = None
+    quantity: int
 
     # desc2: str | None = None
 
@@ -53,6 +55,10 @@ class ItemUpdate(ItemBase):
 
 class CoverUpdate(ItemUpdate):
     cover_id: int | None = None
+
+
+class ItemAdd(SQLModel):
+    quantity: int
 
 
 # -------------------------------------------------------------------
