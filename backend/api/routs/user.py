@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlmodel import select
 
-from models.user import User, UserCreate, UserRead, UserLogin
+from models.user import User, UserCreate, UserRead
 from api.deps import SessionDep
-from general.user import get_password_hash
+from general.password import get_password_hash
 from general.auth import Role
 from general.permission_checker import PermissionChecker
 

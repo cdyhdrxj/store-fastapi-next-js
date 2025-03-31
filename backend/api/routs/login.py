@@ -4,7 +4,8 @@ from datetime import timedelta
 from typing import Annotated
 
 from general.auth import Role, Token, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
-from general.user import verify_password, read_user_by_username
+from general.password import verify_password
+from general.user import read_user_by_username
 from general.permission_checker import PermissionChecker
 from api.deps import SessionDep
 

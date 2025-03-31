@@ -4,3 +4,4 @@ sqlmodel
 python-multipart
 pyjwt
 passlib
+alembic

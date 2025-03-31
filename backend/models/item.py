@@ -22,12 +22,16 @@ class Item(ItemBase, table=True):
 
     images: list["Image"] = Relationship(back_populates="item")
 
+    # desc2: str = Field(max_length=200)
+
 
 class ItemRead(ItemBase):
     id: int
     brand: BrandRead = None
     category: CategoryRead = None
     cover: CoverRead | None = None
+
+    # desc2: str | None = None
 
 
 class ItemReadImages(ItemRead):

@@ -1,5 +1,5 @@
 # Название файла базы данных
-SQLITE_FILE_NAME = "store.db"
+SQLITE_URL = "sqlite:///store.db"
 
 # Путь к каталогу с изображениями
 UPLOAD_FOLDER = "/opt/lampp/htdocs/img/"
