@@ -1,8 +1,8 @@
-"""one more
+"""add desc2 to Item
 
-Revision ID: 6fa8b761f89b
-Revises: 13d7296e17ad
-Create Date: 2025-03-31 23:10:52.028528
+Revision ID: 3731bdd86943
+Revises: bb801a2dcc8b
+Create Date: 2025-04-01 00:56:16.370426
 
 """
 from typing import Sequence, Union
@@ -13,8 +13,8 @@ import sqlmodel          # Added
 
 
 # revision identifiers, used by Alembic.
-revision: str = '6fa8b761f89b'
-down_revision: Union[str, None] = '13d7296e17ad'
+revision: str = '3731bdd86943'
+down_revision: Union[str, None] = 'bb801a2dcc8b'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

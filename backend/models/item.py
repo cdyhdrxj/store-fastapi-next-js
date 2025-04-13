@@ -23,8 +23,6 @@ class Item(ItemBase, table=True):
 
     images: list["Image"] = Relationship(back_populates="item")
 
-    # desc2: str = Field(max_length=200)
-
 
 class ItemRead(ItemBase):
     id: int
@@ -32,8 +30,6 @@ class ItemRead(ItemBase):
     category: CategoryRead = None
     cover: CoverRead | None = None
     quantity: int
-
-    # desc2: str | None = None
 
 
 class ItemReadImages(ItemRead):
