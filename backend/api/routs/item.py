@@ -28,9 +28,9 @@ def create_item(
 @router.get("/", response_model=list[ItemRead])
 def read_items(
     session: SessionDep,
-    search: str = "",
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 20,
+    search: str = "",
 ):
     query = select(Item)
     if search:
