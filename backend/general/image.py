@@ -27,7 +27,7 @@ def validate_file_type(file: UploadFile):
     if not file.content_type.startswith(config.ALLOWED_MIME_TYPE):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="File type not allowed. Only images are allowed."
+            detail="Файл не является изображением"
         )
     return file
 
@@ -37,7 +37,7 @@ def validate_file_size(file: UploadFile):
     if file.size > config.MAX_FILE_SIZE:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="File size exceeds the maximum allowed size (5 MB)."
+            detail="Размер файла более 5 МБ"
         )
     return file
 
@@ -47,7 +47,7 @@ ImageFile = Annotated[
     UploadFile,
     BeforeValidator(validate_file_type),
     BeforeValidator(validate_file_size),
-    Field(description="Only image files less than 5 MB are allowed.")
+    Field(description="Разрешены только изображения размером не более 5 МБ")
 ]
 
 

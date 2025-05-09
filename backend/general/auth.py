@@ -47,7 +47,7 @@ def get_current_user(
 ) -> UserRead:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Необходимо авторизоваться",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
@@ -59,7 +59,7 @@ def get_current_user(
             raise credentials_exception
         token_data = TokenData(username=username, role=role)
     except ExpiredSignatureError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has been expired")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Время жизни токена истекло")
     except InvalidTokenError:
         raise credentials_exception
 

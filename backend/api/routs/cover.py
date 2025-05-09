@@ -18,18 +18,18 @@ def create_cover(
     item_id: int,
     file: ImageFile,
     session: SessionDep,
-    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item = session.get(Item, item_id)
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
 
     if item.cover_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Item already has a cover")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="У товара уже есть обложка")
 
     file_name = image_upload(file)
     if not file_name:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to upload image")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Не удалось загрузить изображение")
 
     image = Cover(name=file_name)
     db_image = Cover.model_validate(image)
@@ -45,7 +45,7 @@ def create_cover(
 def delete_cover(
     item_id: int,
     session: SessionDep,
-    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item = session.get(Item, item_id)
     if not item:
@@ -53,12 +53,15 @@ def delete_cover(
 
     cover = session.get(Cover, item.cover_id)
     if not cover:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item's cover not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Обложка товара не найдена")
 
     if not image_delete(cover.name):
-        raise HTTPException(status_code=500, detail="Unable to delete item's cover")
+        raise HTTPException(status_code=500, detail="Не удалось удалить обложку товара")
 
     session.delete(cover)
     session.commit()
+
+    item.cover_id = None
+    update_item(item_id, item, session)
 
     return {"ok": True}

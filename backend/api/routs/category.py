@@ -15,7 +15,7 @@ router = APIRouter(
 def create_category(
     category: CategoryCreate,
     session: SessionDep,
-    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     db_category = Category.model_validate(category)
     session.add(db_category)
@@ -34,7 +34,7 @@ def read_categories(session: SessionDep):
 def read_category(category_id: int, session: SessionDep):
     category_db = session.get(Category, category_id)
     if not category_db :
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Категория не найдена")
     return category_db 
 
 
@@ -43,11 +43,11 @@ def update_category(
     category_id: int,
     category: CategoryUpdate,
     session: SessionDep,
-    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     category_db = session.get(Category, category_id)
     if not category_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Категория не найдена")
     category_data = category.model_dump(exclude_unset=True)
     category_db.sqlmodel_update(category_data)
     session.add(category_db)
@@ -60,11 +60,11 @@ def update_category(
 def delete_category(
     category_id: int,
     session: SessionDep,
-    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     category = session.get(Category, category_id)
     if not category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Категория не найдена")
     session.delete(category)
     session.commit()
     return {"ok": True}

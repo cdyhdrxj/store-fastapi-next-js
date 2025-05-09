@@ -31,3 +31,7 @@ class UserLogin(UserRead):
 
 class UserToken(UserBase):
     pass
+
+
+class UserUpdate(SQLModel):
+    role: Role

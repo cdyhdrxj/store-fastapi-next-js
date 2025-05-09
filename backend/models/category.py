@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel
 
 
 class CategoryBase(SQLModel):
-    name: str = Field(max_length=50)
+    name: str = Field(min_length=1, max_length=50)
 
 
 class Category(CategoryBase, table=True):
@@ -18,4 +18,4 @@ class CategoryCreate(CategoryBase):
 
 
 class CategoryUpdate(CategoryBase):
-    name: str | None = Field(None, max_length=50)
+    name: str | None = Field(None, min_length=1, max_length=50)

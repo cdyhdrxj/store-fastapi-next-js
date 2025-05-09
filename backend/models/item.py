@@ -6,16 +6,16 @@ from models.cover import Cover, CoverRead
 
 
 class ItemBase(SQLModel):
-    name: str = Field(max_length=50)
-    description: str = Field(max_length=200)
-    price: int = Field(ge=0, le=10 ** 8)
+    name: str = Field(min_length=1, max_length=200)
+    description: str = Field(min_length=1, max_length=1000)
+    price: int = Field(ge=1, le=10 ** 8)
 
 
 class Item(ItemBase, table=True):
     id: int | None = Field(None, primary_key=True)
     brand_id: int = Field(foreign_key="brand.id", ondelete="RESTRICT")
     category_id: int = Field(foreign_key="category.id", ondelete="RESTRICT")
-    cover_id: int | None = Field(None, foreign_key="cover.id", ondelete="SET NULL")
+    cover_id: int | None = Field(None, foreign_key="cover.id")
     quantity: int | None = Field(0, ge=0, le=10 ** 8)
     brand: Brand | None = Relationship()
     category: Category | None = Relationship()
@@ -42,9 +42,9 @@ class ItemCreate(ItemBase):
 
 
 class ItemUpdate(ItemBase):
-    name: str | None = Field(None, max_length=50)
-    description: str | None = Field(None, max_length=200)
-    price: int | None = Field(None, ge=0, le=10 ** 8)
+    name: str | None = Field(None, min_length=1, max_length=200)
+    description: str | None = Field(None, min_length=1, max_length=1000)
+    price: int | None = Field(None, ge=1, le=10 ** 8)
     brand_id: int | None = None
     category_id: int | None = None
 
@@ -54,14 +54,19 @@ class CoverUpdate(ItemUpdate):
 
 
 class ItemAdd(SQLModel):
-    quantity: int
+    quantity: int = Field(0, ge=1, le=10 ** 8)
 
+
+class ItemsPagination(SQLModel):
+    items: list[ItemRead]
+    total: int
+    pages: int
 
 # -------------------------------------------------------------------
 # Классы, связанные с картинками (не знаю, как развести их в разные файлы)
 # -------------------------------------------------------------------
 class ImageBase(SQLModel):
-    name: str = Field(max_length=255)
+    name: str = Field(min_length=1, max_length=255, unique=True)
 
 
 class Image(ImageBase, table=True):

@@ -11,7 +11,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # Для разработки
     ],
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["Content-Type", "Authorization"],
 )
 app.include_router(api_router)

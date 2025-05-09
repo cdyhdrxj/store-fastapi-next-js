@@ -2,7 +2,7 @@ from sqlmodel import Field, SQLModel
 
 
 class CoverBase(SQLModel):
-    name: str = Field(max_length=255)
+    name: str = Field(min_length=1, max_length=255, unique=True)
 
 
 class Cover(CoverBase, table=True):

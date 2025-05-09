@@ -23,7 +23,7 @@ def login_for_access_token(
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Некорректный логин или пароль",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(user, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -36,6 +36,6 @@ from general.auth import get_current_active_user
 @router.get("/me/", response_model=UserRead)
 def read_users_me(
     current_user: Annotated[UserRead, Depends(get_current_active_user)],
-    authorize: bool = Depends(PermissionChecker(roles=[Role.USER, Role.MANAGER, Role.ADMIN]))
+    # authorize: bool = Depends(PermissionChecker(roles=[Role.USER, Role.MANAGER, Role.ADMIN]))
 ):
     return current_user

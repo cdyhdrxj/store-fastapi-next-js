@@ -9,5 +9,5 @@ class PermissionChecker:
 
     def __call__(self, user: UserRead = Depends(get_current_active_user)) -> bool:
         if user.role not in self.roles:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Доступ запрещён")
         return True
