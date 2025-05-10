@@ -15,6 +15,7 @@ import PageHeader from "@/components/common/PageHeader"
 import { Item, Image } from "@/lib/types"
 import { Button, Card, CardMedia, Chip, Divider, Grid } from "@mui/material"
 import Carousel from "@/components/common/Carousel"
+import BuyDialog from "@/components/common/BuyDialog"
 
 interface ItemFormProps {
   params: Promise<{
@@ -30,29 +31,30 @@ export default function ItemPage({ params }: ItemFormProps) {
   const [item, setItem] = useState<Item>()
   const [images, setImages] = useState<Image[]>()
   const [isOutOfStock, setIsOutOfStock] = useState<boolean>()
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const fetchData = async () => {
+    try {
+      const itemRes = await itemsAPI.getItem(id)
+
+      let imageList: Image[] = []
+      if (itemRes.cover)
+        imageList = imageList.concat([{id: itemRes.cover.id, name: itemRes.cover.name}])
+      if (itemRes.images.length > 0)
+        imageList = imageList.concat(itemRes.images)
+
+      setItem(itemRes)
+      setImages(imageList)
+      setIsOutOfStock(itemRes.quantity === 0)
+    } catch (error: any) {
+      enqueueSnackbar(error.message, { variant: "error" })
+      router.push("/")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const itemRes = await itemsAPI.getItem(id)
-
-        let imageList: Image[] = []
-        if (itemRes.cover)
-          imageList = imageList.concat([{id: itemRes.cover.id, name: itemRes.cover.name}])
-        if (itemRes.images.length > 0)
-          imageList = imageList.concat(itemRes.images)
-
-        setItem(itemRes)
-        setImages(imageList)
-        setIsOutOfStock(itemRes.quantity === 0)
-      } catch (error: any) {
-        enqueueSnackbar(error.message, { variant: "error" })
-        router.push("/")
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchData()
   }, [id, enqueueSnackbar])
 
@@ -99,7 +101,7 @@ export default function ItemPage({ params }: ItemFormProps) {
               {isOutOfStock ? (
                 <Chip label="Нет в наличии" color="error" sx={{ fontSize: "0.875rem" }} />
               ) : (
-                <Button variant="contained">Купить</Button>
+                <Button variant="contained" onClick={() => setDialogOpen(true)}>Купить</Button>
               )}
             </Box>
 
@@ -114,6 +116,7 @@ export default function ItemPage({ params }: ItemFormProps) {
           </Grid>
         </Grid>
       </Paper>
+      <BuyDialog id={item.id} open={dialogOpen} setOpen={setDialogOpen} updatePage={fetchData}/>
     </>
   )
 }

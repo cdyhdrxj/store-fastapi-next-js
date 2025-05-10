@@ -71,7 +71,17 @@ export const itemsAPI = {
       method: "PATCH",
       body: JSON.stringify(itemData),
     })
-  }
+  },
+}
+
+// API для совершения покупок
+export const buyAPI = {
+  buyItem: async (id: number, buyData: any) => {
+    return fetchAPI(`/buy/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(buyData),
+    })
+  },
 }
 
 // API для работы с обложками

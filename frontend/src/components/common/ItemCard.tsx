@@ -14,9 +14,11 @@ import CardActionArea from "@mui/material/CardActionArea"
 
 interface ItemCardProps {
   item: Item
+  setId: (id: number | null) => void
+  setDialogOpen: (open: boolean) => void
 }
 
-export default function ItemCard({ item } : ItemCardProps) {
+export default function ItemCard({ item, setId, setDialogOpen } : ItemCardProps) {
   const { id, name, price, cover, quantity } = item
   const isOutOfStock = quantity === 0
 
@@ -68,7 +70,11 @@ export default function ItemCard({ item } : ItemCardProps) {
             <Typography variant="h6" color="primary" sx={{ fontWeight: "bold" }}>
                 {price} руб.
             </Typography>
-            {!isOutOfStock && (<Button variant="contained">Купить</Button>)}
+            {!isOutOfStock && (
+              <Button variant="contained" onClick={() => {setId(id); setDialogOpen(true)}}>
+                Купить
+              </Button>
+            )}
           </Box>
         </CardContent>
     </Card>
