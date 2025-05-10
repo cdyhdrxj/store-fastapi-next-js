@@ -25,7 +25,7 @@ import type { Category } from "@/lib/types"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmDialog from "@/components/common/ConfirmDialog"
 
-export default function CategoriesPage() {
+export default function CategoriesAdminPage() {
   const { enqueueSnackbar } = useSnackbar()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)

@@ -33,7 +33,7 @@ interface ItemFormProps {
   }>;
 }
 
-export default function ItemForm({ params }: ItemFormProps) {
+export default function ItemAdminForm({ params }: ItemFormProps) {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const { id } = use(params);
@@ -263,20 +263,25 @@ export default function ItemForm({ params }: ItemFormProps) {
             {!isNew && (
               <>
                 <Grid size={{ xs: 12 }}>
-                  <ImageUploader title="Обложка" isCover={true} itemId={parseInt(id)} setItem={setItem}/>
                   {item.cover ? (
-                    <Grid size={{xs: 6, sm: 4, md: 3 }}>
-                      <Card>
-                        <CardMedia component="img" height="256" image={getURL(item.cover.name)} alt="Обложка" sx={{ objectFit: "contain" }} />
-                        <CardActions>
-                          <IconButton color="error" onClick={() => handleDeleteImageClick(true)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </CardActions>
-                      </Card>
-                    </Grid>
+                    <>
+                      <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+                        Обложка
+                      </Typography>
+                      <Grid size={{xs: 6, sm: 4, md: 3 }}>
+                        <Card>
+                          <CardMedia component="img" height="256" image={getURL(item.cover.name)} alt="Обложка" sx={{ objectFit: "contain" }} />
+                          <CardActions>
+                            <IconButton color="error" onClick={() => handleDeleteImageClick(true)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </CardActions>
+                        </Card>
+                      </Grid>
+                    </>
                   ) : (
                     <Grid size={{ xs: 12 }}>
+                    <ImageUploader title="Обложка" isCover={true} itemId={parseInt(id)} setItem={setItem}/>
                       <Typography color="text.secondary">Нет обложки</Typography>
                     </Grid>
                   )}

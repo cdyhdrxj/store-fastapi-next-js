@@ -25,7 +25,7 @@ import type { Brand } from "@/lib/types"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmDialog from "@/components/common/ConfirmDialog"
 
-export default function BrandsPage() {
+export default function BrandsAdminPage() {
   const { enqueueSnackbar } = useSnackbar()
   const [brands, setBrands] = useState<Brand[]>([])
   const [loading, setLoading] = useState(true)

@@ -31,7 +31,7 @@ import type { Item, ItemQuantityUpdate, PaginationData } from "@/lib/types"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmDialog from "@/components/common/ConfirmDialog"
 
-export default function itemsPage() {
+export default function ItemsAdminPage() {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const [items, setItems] = useState<Item[]>([])

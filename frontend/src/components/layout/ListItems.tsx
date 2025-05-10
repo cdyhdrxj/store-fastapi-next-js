@@ -14,7 +14,7 @@ export function MainListItems() {
   const pathname = usePathname()
 
   const managerMenuItems = [
-    { text: "Товары", icon: <ShoppingCartIcon />, href: "/admin/items" },
+    { text: "Товары", icon: <ShoppingCartIcon />, href: "/admin" },
     { text: "Категории", icon: <CategoryIcon />, href: "/admin/categories" },
     { text: "Бренды", icon: <BrandingWatermarkIcon />, href: "/admin/brands" },
   ]

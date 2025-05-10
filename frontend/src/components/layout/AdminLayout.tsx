@@ -93,7 +93,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-            <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
+            <Link href="/admin" style={{ color: "inherit", textDecoration: "none" }}>
               Интернет-магазин. Управление
             </Link>
           </Typography>

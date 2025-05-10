@@ -21,7 +21,7 @@ import { roleNames } from "@/lib/types"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmDialog from "@/components/common/ConfirmDialog"
 
-export default function usersPage() {
+export default function UsersAdminPage() {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const [users, setUsers] = useState<User[]>([])

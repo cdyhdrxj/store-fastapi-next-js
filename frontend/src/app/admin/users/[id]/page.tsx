@@ -28,7 +28,7 @@ interface ItemFormProps {
   }>;
 }
 
-export default function UserForm({ params }: ItemFormProps) {
+export default function UserAdminForm({ params }: ItemFormProps) {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const { id } = use(params);
