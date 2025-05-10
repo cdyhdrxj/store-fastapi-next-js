@@ -7,9 +7,17 @@ import MuiAppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
+import { Button } from "@mui/material"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+
+  const handleLogin = () => {
+    router.push("/login")
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <MuiAppBar position="absolute">
@@ -19,6 +27,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
               Интернет-магазин
             </Link>
           </Typography>
+          <Button variant="outlined" onClick={handleLogin} sx={{ color: "white" }}>Войти</Button>
         </Toolbar>
       </MuiAppBar>
       <Box
