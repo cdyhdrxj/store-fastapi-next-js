@@ -6,10 +6,13 @@ import { Box, Button, Container, Paper, TextField, Typography } from "@mui/mater
 import { useRouter } from "next/navigation"
 import { loginAPI } from "@/lib/api"
 import { useSnackbar } from "notistack"
+import { setCookie } from 'cookies-next/client'
+import { useWebSocket } from '@/context/ws-context'
 
 export default function LoginPage() {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
+  const { connect } = useWebSocket()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
@@ -23,7 +26,12 @@ export default function LoginPage() {
 
       const response = await loginAPI.login(loginData)
       enqueueSnackbar(`Добро пожаловать, ${response.username}!`, { variant: "success" })
+
+      if (response.role === "manager") connect()
+
+      setCookie('user-role', response.role, { expires: new Date(Date.now() + 30 * 60 * 1000) })
       router.push("/")
+      router.refresh()
     }
     catch (error: any) {
       enqueueSnackbar(error.message, { variant: "error" })
@@ -77,8 +85,6 @@ export default function LoginPage() {
                 htmlInput: {
                   minLength: 8,
                   maxLength: 64,
-                  pattern: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
-                  title: "Нет пробелов, минимум 1 буква и 1 цифра"
                 }
               }}
             />

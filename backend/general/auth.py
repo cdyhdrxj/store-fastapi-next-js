@@ -44,12 +44,21 @@ def create_access_token(user: UserToken, expires_delta: timedelta) -> str:
 def get_current_user(
     session: SessionDep,
     response: Response,
-    access_token: str = Cookie(...),
+    access_token: str = Cookie(None),
 ) -> UserRead:
+    if access_token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Необходимо войти в аккаунт",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Необходимо авторизоваться",
+        detail="Недействительные учетные данные",
+        headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get(T.USERNAME)
@@ -59,10 +68,7 @@ def get_current_user(
             delete_cookie(response)
             raise credentials_exception
         token_data = TokenData(username=username, role=role)
-    except ExpiredSignatureError:
-        delete_cookie(response)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Время жизни токена истекло")
-    except InvalidTokenError:
+    except [ExpiredSignatureError, InvalidTokenError]:
         delete_cookie(response)
         raise credentials_exception
 
@@ -93,4 +99,8 @@ def delete_cookie(response: Response):
         secure=True,
         path="/",
     )
- 
+
+    response.delete_cookie(
+        key="user-role",
+        path="/",
+    )

@@ -6,9 +6,9 @@ import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import Link from "next/link"
-import { LogoutButton } from "../common/LogoutButton"
+import { LoginButton } from "../common/LoginButton"
 
-export default function UserLayout({ children }: { children: React.ReactNode }) {
+export default function BaseLayout({ children }: { children: React.ReactNode }) {
   return (
     <Box sx={{ display: "flex" }}>
       <MuiAppBar position="absolute">
@@ -18,7 +18,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
               Интернет-магазин
             </Link>
           </Typography>
-          <LogoutButton isManager={false}/>
+          <LoginButton/>
         </Toolbar>
       </MuiAppBar>
       <Box

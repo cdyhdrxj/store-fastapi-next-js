@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from typing import Annotated
 from fastapi import Response
+from models.user import UserRead
 from general.auth import Role, create_access_token, delete_cookie, ACCESS_TOKEN_EXPIRE_MINUTES
 from general.password import verify_password
 from general.user import read_user_by_username
@@ -14,7 +15,7 @@ router = APIRouter(
     tags=["Аутентификация"],
 )
 
-@router.post("/")
+@router.post("/", response_model=UserRead)
 def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     session: SessionDep,
@@ -46,7 +47,7 @@ def login_for_access_token(
         path="/",
     )
     
-    return { "username": user.username }
+    return user
 
 
 @router.post("/logout/")

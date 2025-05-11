@@ -18,56 +18,9 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ListItems from "@/components/layout/ListItems"
 import Link from "next/link"
 import { LogoutButton } from "../common/LogoutButton"
+import { AppBar, Drawer } from "./AdminLayout"
 
-const drawerWidth: number = 240
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean
-}
-
-export const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}))
-
-export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
-  "& .MuiDrawer-paper": {
-    position: "relative",
-    whiteSpace: "nowrap",
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    boxSizing: "border-box",
-    ...(!open && {
-      overflowX: "hidden",
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      width: theme.spacing(7),
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9),
-      },
-    }),
-  },
-}))
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function ManagerLayout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(true)
   const toggleDrawer = () => {
     setOpen(!open)
@@ -98,7 +51,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Интернет-магазин. Управление
             </Link>
           </Typography>
-          <LogoutButton isManager={false}/>
+          <LogoutButton isManager={true}/>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -116,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </Toolbar>
         <Divider />
         <List component="nav">
-          <ListItems isAdmin={true}/>
+          <ListItems isAdmin={false}/>
         </List>
       </Drawer>
       <Box

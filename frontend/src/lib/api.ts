@@ -1,5 +1,7 @@
 // URL API
 const API_URL = "http://localhost:8000"
+// URL для websocket-соединения
+export const WS_URL = 'ws://localhost:8000/ws'
 // URL папки с изображениями
 const IMG_URL = "http://localhost/img/"
 
@@ -28,10 +30,6 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}, isSpecial: 
   const data = await response.json()
 
   if (!response.ok) {
-    // if (response.status === 401) {
-    //   localStorage.removeItem("token")
-    //   router.push("/login")
-    // }
     throw new Error(data.detail[0].msg || data.detail || "Произошла ошибка при выполнении запроса")
   }
 
