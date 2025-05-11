@@ -6,6 +6,7 @@ from sqlalchemy import func
 from models.item import Item, ItemCreate, ItemRead, ItemReadImages, ItemUpdate, ItemAdd, ItemsPagination
 from api.deps import SessionDep
 from general.auth import Role
+from general.image import image_delete
 from general.permission_checker import PermissionChecker
 
 router = APIRouter(
@@ -106,6 +107,19 @@ def delete_item(
     item = session.get(Item, item_id)
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
+
+    cover = item.cover
+    images = item.images
+
+    if cover:
+        image_delete(cover.name)
+        session.delete(cover)
+
+    for img in images:
+        image_delete(img.name)
+        session.delete(img)
+
     session.delete(item)
     session.commit()
+
     return {"ok": True}
