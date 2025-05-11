@@ -46,7 +46,7 @@ def login_for_access_token(
         path="/",
     )
     
-    return {"ok": True}
+    return { "username": user.username }
 
 
 @router.post("/logout/")

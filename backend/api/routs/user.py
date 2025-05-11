@@ -4,7 +4,7 @@ from sqlmodel import select
 from models.user import User, UserCreate, UserRead, UserUpdate
 from api.deps import SessionDep
 from general.password import get_password_hash
-from general.auth import Role
+from general.auth import Role, get_current_active_user
 from general.permission_checker import PermissionChecker
 
 router = APIRouter(
@@ -52,11 +52,16 @@ def update_user(
     user_id: int,
     user: UserUpdate,
     session: SessionDep,
+    current_user: UserRead = Depends(get_current_active_user),
     authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     user_db = session.get(User, user_id)
     if not user_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
+    
+    if (user_id == current_user.id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Нельзя изменить свою роль!")
+
     user_data = user.model_dump(exclude_unset=True)
     user_db.sqlmodel_update(user_data)
     session.add(user_db)
@@ -69,11 +74,16 @@ def update_user(
 def delete_user(
     user_id: int,
     session: SessionDep,
+    current_user: UserRead = Depends(get_current_active_user),
     authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
+
+    if (user_id == current_user.id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Нельзя удалить свой аккаунт")
+
     session.delete(user)
     session.commit()
     return {"ok": True}
