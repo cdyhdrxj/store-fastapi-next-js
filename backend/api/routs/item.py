@@ -17,7 +17,7 @@ router = APIRouter(
 def create_item(
     item: ItemCreate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     db_item = Item.model_validate(item)
     session.add(db_item)
@@ -61,7 +61,7 @@ def update_item(
     item_id: int,
     item: ItemUpdate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item_db = session.get(Item, item_id)
     if not item_db:
@@ -79,7 +79,7 @@ def update_quantity(
     item_id: int,
     item: ItemAdd,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item_db = session.get(Item, item_id)
     if not item_db:
@@ -101,7 +101,7 @@ def update_quantity(
 def delete_item(
     item_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item = session.get(Item, item_id)
     if not item:

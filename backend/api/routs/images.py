@@ -16,7 +16,7 @@ def create_image(
     item_id: int,
     file: ImageFile,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item = session.get(Item, item_id)
     if not item:
@@ -40,7 +40,7 @@ def create_image(
 def delete_image(
     image_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     image = session.get(Image, image_id)
     if not image:

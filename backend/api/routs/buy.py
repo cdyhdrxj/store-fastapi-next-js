@@ -15,7 +15,7 @@ def buy_item(
     item_id: int,
     item: ItemAdd,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.USER]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.USER]))
 ):
     item_db = session.get(Item, item_id)
     if not item_db:

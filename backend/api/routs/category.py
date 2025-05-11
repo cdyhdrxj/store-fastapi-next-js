@@ -15,7 +15,7 @@ router = APIRouter(
 def create_category(
     category: CategoryCreate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     db_category = Category.model_validate(category)
     session.add(db_category)
@@ -25,13 +25,20 @@ def create_category(
 
 
 @router.get("/", response_model=list[CategoryRead])
-def read_categories(session: SessionDep):
-    categorys = session.exec(select(Category)).all()
-    return categorys
+def read_categories(
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
+    categories = session.exec(select(Category)).all()
+    return categories
 
 
 @router.get("/{category_id}", response_model=CategoryRead)
-def read_category(category_id: int, session: SessionDep):
+def read_category(
+    category_id: int,
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
     category_db = session.get(Category, category_id)
     if not category_db :
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Категория не найдена")
@@ -43,7 +50,7 @@ def update_category(
     category_id: int,
     category: CategoryUpdate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     category_db = session.get(Category, category_id)
     if not category_db:
@@ -60,7 +67,7 @@ def update_category(
 def delete_category(
     category_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     category = session.get(Category, category_id)
     if not category:

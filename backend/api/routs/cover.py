@@ -18,7 +18,7 @@ def create_cover(
     item_id: int,
     file: ImageFile,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item = session.get(Item, item_id)
     if not item:
@@ -45,7 +45,7 @@ def create_cover(
 def delete_cover(
     item_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     item = session.get(Item, item_id)
     if not item:

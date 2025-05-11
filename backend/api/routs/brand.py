@@ -15,7 +15,7 @@ router = APIRouter(
 def create_brand(
     brand: BrandCreate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     db_brand = Brand.model_validate(brand)
     session.add(db_brand)
@@ -25,13 +25,20 @@ def create_brand(
 
 
 @router.get("/", response_model=list[BrandRead])
-def read_brands(session: SessionDep):
+def read_brands(
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
     brands = session.exec(select(Brand)).all()
     return brands
 
 
 @router.get("/{brand_id}", response_model=BrandRead)
-def read_brand(brand_id: int, session: SessionDep):
+def read_brand(
+    brand_id: int,
+    session: SessionDep,
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+):
     brand_db = session.get(Brand, brand_id)
     if not brand_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Бренд не найден")
@@ -43,7 +50,7 @@ def update_brand(
     brand_id: int,
     brand: BrandUpdate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     brand_db = session.get(Brand, brand_id)
     if not brand_db:
@@ -60,7 +67,7 @@ def update_brand(
 def delete_brand(
     brand_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.MANAGER, Role.ADMIN]))
 ):
     brand = session.get(Brand, brand_id)
     if not brand:

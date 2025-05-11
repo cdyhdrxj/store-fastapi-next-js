@@ -16,7 +16,7 @@ router = APIRouter(
 def create_user(
     user: UserCreate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     db_user = User.model_validate(user)
     db_user.password_hash = get_password_hash(user.password)
@@ -29,7 +29,7 @@ def create_user(
 @router.get("/", response_model=list[UserRead])
 def read_users(
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     users = session.exec(select(User)).all()
     return users
@@ -39,7 +39,7 @@ def read_users(
 def read_user(
     user_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     user_db = session.get(User, user_id)
     if not user_db:
@@ -52,7 +52,7 @@ def update_user(
     user_id: int,
     user: UserUpdate,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     user_db = session.get(User, user_id)
     if not user_db:
@@ -69,7 +69,7 @@ def update_user(
 def delete_user(
     user_id: int,
     session: SessionDep,
-    # authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
+    authorize: bool = Depends(PermissionChecker(roles=[Role.ADMIN]))
 ):
     user = session.get(User, user_id)
     if not user:
