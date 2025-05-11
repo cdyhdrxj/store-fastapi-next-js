@@ -17,6 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import { MainListItems } from "./ListItems"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const drawerWidth: number = 240
 
@@ -67,9 +68,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
 }))
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
   const [open, setOpen] = useState(true)
   const toggleDrawer = () => {
     setOpen(!open)
+  }
+
+  const handleLogin = () => {
+    router.push("/login")
   }
 
   return (
@@ -97,6 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Интернет-магазин. Управление
             </Link>
           </Typography>
+          {/* <Button>Войти</Button> */}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

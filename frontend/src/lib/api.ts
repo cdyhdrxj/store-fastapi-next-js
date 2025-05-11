@@ -9,15 +9,17 @@ export function getURL(filename: string) {
 }
 
 // Общая функция для выполнения запросов
-async function fetchAPI(endpoint: string, options: RequestInit = {}, isImage: boolean = false) {
+async function fetchAPI(endpoint: string, options: RequestInit = {}, isSpecial: boolean = false) {
   const url = `${API_URL}${endpoint}`
   const headers = new Headers(options.headers)
 
-  if (!isImage)
+  if (!isSpecial) {
     headers.set("Content-Type", "application/json")
+  }
 
   const req = {
     method: "GET",
+    credentials: "include" as RequestCredentials,
     headers: headers,
     ...options,
   }
@@ -26,6 +28,10 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}, isImage: bo
   const data = await response.json()
 
   if (!response.ok) {
+    // if (response.status === 401) {
+    //   localStorage.removeItem("token")
+    //   router.push("/login")
+    // }
     throw new Error(data.detail[0].msg || data.detail || "Произошла ошибка при выполнении запроса")
   }
 
@@ -205,4 +211,24 @@ export const usersAPI = {
       method: "DELETE",
     })
   },
+}
+
+// API для аутентификации
+export const loginAPI = {
+  login: async (loginData: any) => {
+    return fetchAPI("/login", {
+      method: "POST",
+      body: loginData,
+    }, true)
+  },
+  logout: async () => {
+    return fetchAPI("/login/logout", {
+      method: "POST",
+    })
+  },
+  me: async () => {
+    return fetchAPI("/login/me", {
+      method: "GET",
+    })
+  }
 }

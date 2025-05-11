@@ -10,12 +10,25 @@ import Container from "@mui/material/Container"
 import { Button } from "@mui/material"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { loginAPI } from "@/lib/api"
+import { enqueueSnackbar } from "notistack"
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   const handleLogin = () => {
     router.push("/login")
+  }
+
+  const handleLogout = async () => {
+    try {
+      await loginAPI.logout()
+      enqueueSnackbar("Вы успешно вышли из аккаунта", { variant: "success" })
+      router.push("/")
+    }
+    catch (error: any) {
+      enqueueSnackbar(error.message, { variant: "error" })
+    }
   }
 
   return (
@@ -28,6 +41,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             </Link>
           </Typography>
           <Button variant="outlined" onClick={handleLogin} sx={{ color: "white" }}>Войти</Button>
+          <Button variant="outlined" onClick={handleLogout} sx={{ color: "white" }}>Выйти</Button>
         </Toolbar>
       </MuiAppBar>
       <Box

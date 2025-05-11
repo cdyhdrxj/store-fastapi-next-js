@@ -41,8 +41,8 @@ export default function CategoriesAdminPage() {
     try {
       const response = await categoriesAPI.getCategories()
       setCategories(response)
-    } catch (error) {
-      enqueueSnackbar("Ошибка при загрузке данных", { variant: "error" })
+    } catch (error: any) {
+      enqueueSnackbar(error.message, { variant: "error" })
     } finally {
       setLoading(false)
     }

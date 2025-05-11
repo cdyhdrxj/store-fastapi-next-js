@@ -4,18 +4,30 @@ import type React from "react"
 import { useState } from "react"
 import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material"
 import { useRouter } from "next/navigation"
+import { loginAPI } from "@/lib/api"
+import { useSnackbar } from "notistack"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    console.log("Логин:", username)
-    console.log("Пароль:", password)
-    // Здесь будет логика авторизации
-    router.back()
+
+    try {
+      const loginData = new FormData()
+      loginData.append("username", username)
+      loginData.append("password", password)
+
+      const response = await loginAPI.login(loginData)
+      enqueueSnackbar(`Добро пожаловать, ${response.username}!`, { variant: "success" })
+      router.push("/")
+    }
+    catch (error: any) {
+      enqueueSnackbar(error.message, { variant: "error" })
+    }
   }
 
   return (

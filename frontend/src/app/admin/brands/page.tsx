@@ -41,8 +41,8 @@ export default function BrandsAdminPage() {
     try {
       const response = await brandsAPI.getBrands()
       setBrands(response)
-    } catch (error) {
-      enqueueSnackbar("Ошибка при загрузке данных", { variant: "error" })
+    } catch (error: any) {
+      enqueueSnackbar(error.message, { variant: "error" })
     } finally {
       setLoading(false)
     }

@@ -39,8 +39,8 @@ export default function MainPage() {
         pages: response.pages,
       }))
       setItems(response.items)
-    } catch (error) {
-      enqueueSnackbar("Ошибка при загрузке данных", { variant: "error" })
+    } catch (error: any) {
+      enqueueSnackbar(error.message, { variant: "error" })
     } finally {
       setLoading(false)
     }
