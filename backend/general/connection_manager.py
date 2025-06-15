@@ -8,17 +8,13 @@ class ConnectionManager:
         self.active_connections: List[WebSocket] = []
     
     async def connect(self, websocket: WebSocket):
-        print("Запрос на подключение")
         await websocket.accept()
         self.active_connections.append(websocket)
-        print("Подключение")
     
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
-        print("Отключение")
     
     async def send_message(self, message: str, websocket: WebSocket):
-        print("Отправка сообщения " + message)
         await websocket.send_text(message)
     
     async def broadcast(self, message: str):
@@ -29,7 +25,6 @@ class ConnectionManager:
                 self.disconnect(connection)
     
     async def notify_managers_about_buying(self, username: str, item: str, quantity: int):
-        print(f"Произошла покупка {username} {item} {quantity}")
         message = {
             "username": username,
             "item": item,
