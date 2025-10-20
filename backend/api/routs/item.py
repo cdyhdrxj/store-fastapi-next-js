@@ -123,3 +123,27 @@ def delete_item(
     session.commit()
 
     return {"ok": True}
+
+
+@router.get("/similar/{item_id}", response_model=list[ItemRead])
+def get_similar_items(
+    item_id: int,
+    session: SessionDep,
+    limit: int = 5,
+):
+    item = session.get(Item, item_id)
+    if not item:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
+
+    query = (
+        select(Item)
+        .where(
+            (Item.category_id == item.category_id) &
+            (Item.id != item_id)
+        )
+        .order_by(func.abs(Item.price - item.price))
+        .limit(limit)
+    )
+
+    similar_items = session.exec(query).all()
+    return similar_items
