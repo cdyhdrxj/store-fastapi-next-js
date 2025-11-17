@@ -11,14 +11,9 @@ def generate_unique_filename(filename: str, max_length: int = 255):
 
     name, ext = os.path.splitext(filename)
 
-    uuid_length = len(unique_id) + 1  # +1 для символа "_"
-    ext_length = len(ext)
-    max_name_length = max_length - uuid_length - ext_length
-
-    if len(name) > max_name_length:
-        name = name[:max_name_length]  # Обрезаем имя до max_name_length символов
-
     unique_name = f"{name}_{unique_id}{ext}"
+    if len(unique_id) > max_length:
+        unique_name = unique_name[-max_length:]
     return unique_name
 
 
