@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query, Depends, status
-from typing import Annotated
+from typing import Annotated, List
 from sqlmodel import select
 from sqlalchemy import func
 
@@ -135,15 +135,31 @@ def get_similar_items(
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Товар не найден")
 
-    query = (
-        select(Item)
-        .where(
-            (Item.category_id == item.category_id) &
-            (Item.id != item_id)
-        )
-        .order_by(func.abs(Item.price - item.price))
-        .limit(limit)
-    )
+    all_items = session.exec(select(Item)).all()
+    similar_items = find_similar_items(all_items, item, limit)
 
-    similar_items = session.exec(query).all()
     return similar_items
+
+
+def find_similar_items(all_items: List[Item], target_item: Item, limit: int = 5) -> List[Item]:
+    if not target_item:
+        return []
+    
+    similar_items = []
+    
+    for item in all_items:
+        # Исключаем сам товар
+        if item.id == target_item.id:
+            continue
+            
+        # Фильтруем по категории
+        if item.category_id != target_item.category_id:
+            continue
+            
+        # Добавляем подходящий товар
+        similar_items.append(item)
+    
+    # Сортируем по разнице в цене
+    similar_items.sort(key=lambda x: abs(x.price - target_item.price))
+    
+    return similar_items[:limit]
