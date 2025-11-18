@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import Mock, AsyncMock, patch, MagicMock
+from unittest.mock import Mock, AsyncMock, patch
 from fastapi import HTTPException
 from models.item import ItemAdd
 from api.routs.buy import buy_item
@@ -9,13 +9,13 @@ class TestBuyItem:
     @pytest.mark.asyncio
     async def test_buy_item_success(self):
         """Тест 1: Проверить успешное выполнение покупки товара."""
-        mock_session = MagicMock()
-        mock_item = MagicMock()
+        mock_session = Mock()
+        mock_item = Mock()
         mock_item.quantity = 5
         mock_item.name = "Смартфон Samsung"
         mock_session.get.return_value = mock_item
         
-        mock_user = MagicMock()
+        mock_user = Mock()
         mock_user.username = "иванов_иван"
         
         with patch('api.routs.buy.manager') as mock_manager:
@@ -42,7 +42,7 @@ class TestBuyItem:
     @pytest.mark.asyncio
     async def test_buy_item_not_found(self):
         """Тест 2: Проверить обработку ситуации, когда товар не найден."""
-        mock_session = MagicMock()
+        mock_session = Mock()
         mock_session.get.return_value = None
         
         with pytest.raises(HTTPException) as exc_info:
@@ -50,7 +50,7 @@ class TestBuyItem:
                 item_id=999,
                 item=ItemAdd(quantity=1),
                 session=mock_session,
-                current_user=MagicMock(),
+                current_user=Mock(),
                 authorize=True
             )
         
@@ -62,8 +62,8 @@ class TestBuyItem:
     @pytest.mark.asyncio
     async def test_buy_item_insufficient_quantity(self):
         """Тест 3: Проверить обработку ситуации, когда запрашиваемое количество больше доступного."""
-        mock_session = MagicMock()
-        mock_item = MagicMock()
+        mock_session = Mock()
+        mock_item = Mock()
         mock_item.quantity = 1
         mock_session.get.return_value = mock_item
         
@@ -72,7 +72,7 @@ class TestBuyItem:
                 item_id=1,
                 item=ItemAdd(quantity=5),
                 session=mock_session,
-                current_user=MagicMock(),
+                current_user=Mock(),
                 authorize=True
             )
         
@@ -84,8 +84,8 @@ class TestBuyItem:
     @pytest.mark.asyncio
     async def test_buy_item_sqlmodel_update_called(self):
         """Тест 4: Проверить вызов метода обновления данных."""
-        mock_session = MagicMock()
-        mock_item = MagicMock()
+        mock_session = Mock()
+        mock_item = Mock()
         mock_item.quantity = 5
         mock_item.sqlmodel_update = Mock()
         mock_session.get.return_value = mock_item
@@ -97,7 +97,7 @@ class TestBuyItem:
                 item_id=1,
                 item=ItemAdd(quantity=2),
                 session=mock_session,
-                current_user=MagicMock(),
+                current_user=Mock(),
                 authorize=True
             )
             
@@ -106,13 +106,13 @@ class TestBuyItem:
     @pytest.mark.asyncio
     async def test_buy_item_exact_quantity(self):
         """Тест 5: Проверить покупку всего доступного количества товара."""
-        mock_session = MagicMock()
-        mock_item = MagicMock()
+        mock_session = Mock()
+        mock_item = Mock()
         mock_item.quantity = 3
         mock_item.name = "Наушники"
         mock_session.get.return_value = mock_item
         
-        mock_user = MagicMock()
+        mock_user = Mock()
         mock_user.username = "иванов_иван"
         
         with patch('api.routs.buy.manager') as mock_manager:
