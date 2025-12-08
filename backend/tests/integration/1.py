@@ -59,7 +59,6 @@ class TestAuthIntegration:
             username=username,
             password_hash=get_password_hash(password),
             role=role,
-            created_at=datetime.utcnow()
         )
         self.session.add(user)
         self.session.commit()
