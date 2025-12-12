@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from datetime import datetime, timedelta
 import io
-from unittest.mock import patch
+from unittest.mock import patch, mock_open, MagicMock
 
 from main import app
 from models.user import User
@@ -107,15 +107,25 @@ class TestImageIntegration:
         self.client.cookies.set("role", user.role.value)
     
     def create_test_image_file(self):
-        image_bytes = b'test_image_content'
-        return ("test.jpg", io.BytesIO(image_bytes), "image/jpeg")
+        jpeg_data = b'0' * 100
+        return ("test.jpg", io.BytesIO(jpeg_data), "image/jpeg")
     
     # Тесты для функции create_image
-    
+
     def test_create_image_with_manager_role(self):
         """Тест 1: Проверить загрузку изображения для товара пользователем с ролью менеджера"""
-        with patch('general.image.image_upload') as mock_upload:
-            mock_upload.return_value = f"test_image_{datetime.now().timestamp()}.jpg"
+        mock_config = MagicMock()
+        mock_config.UPLOAD_FOLDER = "/mock/upload/folder"
+        mock_config.ALLOWED_MIME_TYPE = "image/"
+        mock_config.MAX_FILE_SIZE = 5 * 1024 * 1024
+        
+        with patch('general.image.generate_unique_filename') as mock_generate, \
+             patch('builtins.open', mock_open()) as mock_file, \
+             patch('os.path.join') as mock_join, \
+             patch('general.image.config', mock_config):
+            
+            mock_generate.return_value = "test_unique_image.jpg"
+            mock_join.return_value = "/mock/path/test_unique_image.jpg"
             
             manager_user = self.create_test_user('manager', 'password123', Role.MANAGER)
             test_item = self.create_test_item()
@@ -130,7 +140,7 @@ class TestImageIntegration:
             item_data = response.json()
             assert item_data['id'] == test_item.id
             assert len(item_data['images']) == 1
-    
+
     def test_create_image_with_user_role(self):
         """Тест 2: Проверить запрет загрузки изображения для пользователя без прав"""
         regular_user = self.create_test_user('user', 'password123', Role.USER)
