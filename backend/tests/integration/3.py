@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from datetime import datetime, timedelta
+from datetime import timedelta
 import io
 import os
 import tempfile
@@ -14,7 +14,6 @@ from models.brand import Brand
 from models.category import Category
 from general.auth import Role, create_access_token
 from general.password import get_password_hash
-from general.image import generate_unique_filename, image_upload, image_delete
 
 from sqlmodel import SQLModel, create_engine, Session
 from sqlmodel.pool import StaticPool
